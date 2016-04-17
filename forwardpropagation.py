@@ -1,7 +1,7 @@
 
 import numpy as np
 from numpy.random import rand
-
+from toolbox import *
 
 class ForwardPropagation:
 
@@ -34,15 +34,30 @@ class ForwardPropagation:
 
 		for i in range(len(shape)-1):
                         rows = shape[i+1]
-                        cols = shape[i] + 1
+                        cols = shape[i]+1
 			self.W.append(np.sqrt(12./(rows*cols))*np.matrix(rand(rows, cols)))
-			self.b.append(np.sqrt(12./cols)*np.matrix(rand(cols)))
+			self.b.append(np.sqrt(12./cols)*np.matrix(rand(rows)).T)
 
 
-	def forward(self, X, function=):
+	def forward(self, X, function=sigmoid):
                 """forward propagtion of Multi-Layer-Perceptron"""
-		pass
 
+                one = np.matrix(1)
+                # cast input as numpy matrix
+                result = np.matrix(X).T
+                
+                for i, each in enumerate(self.W):
+                        # add a bias unit
+                        result = np.r_[one,np.matrix(result)]
+
+                        # multiply
+                        result = each*result + self.b[i]
+
+                        # apply activation function
+                        result = function(result)
+                        
+                # return result of forward propagation
+                return result
 
 	def logging(self, tags):
                 """return some statistics of the most recent forward propagation"""
